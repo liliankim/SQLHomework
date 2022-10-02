@@ -107,4 +107,85 @@ function viewEmployees() {
     })
 };
 
-    
+//adding a department
+function addDepartment() {
+  inquirer.prompt ([
+    {
+      name: 'newDepartment',
+      type: 'input',
+      message: 'Enter new department'
+    }
+  ]).then (function (respond) {
+    connection.query (
+      'INSERT INTO department SET ?',
+      {
+        name: answer.newDepartment
+      });
+      var SQL = 'SELECT * FROM department';
+      connection.query(query, function (err, res){
+        if(err)throw err;
+        console.log('Department successfully addded');
+        console.table('Departments', res);
+        options();
+      })
+  })
+};
+
+//add a role to database
+
+function addRole(){
+  connection.query('SELECT * FROM department', function(err, res){
+    if (err) throw err;
+    inquirer.prompt([
+      {
+        name: 'new_role',
+        type: 'input',
+        message: 'Enter new role'
+      },
+      {
+        name: 'salary',
+        type: 'input',
+        message: 'Enter salary'
+      },
+      {
+        name: 'department',
+        type: 'list',
+        chocies: function() {
+          var dept = [];
+          for (let i = 0; i < res.length; i++) {
+            dept.push(res[i].name);
+          }
+          return dept;
+        },
+
+      }
+    ]). then(function(answer){
+      let department_id;
+      for (let a = 0; a< res.length; a++){
+        if (res[a].name == answer.Department){
+          department_id = res[a].id;
+        }
+      }
+
+      connection.query(
+        'INSERT INTO role SET ?',
+        {
+          title: answer.new_role,
+          salary: answer.salary,
+          department_id: department_id
+        },
+        function(err, res) {
+          if(err) throw err;
+          console.log('New role added to system');
+          console.table('All Roles:', res);
+          options();
+        })
+    })
+  })
+};
+
+
+   
+
+
+  
