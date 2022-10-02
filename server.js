@@ -184,6 +184,61 @@ function addRole(){
   })
 };
 
+//add employee
+function addEmployee() {
+  connection.query('SELECT * FROM role', function (err, res){
+    if (err) throw err;
+    inquirer.prompt([
+      {
+        name: 'first_name',
+        type: 'input',
+        message: 'Enter first name of employee',
+      },
+      {
+        name: 'last_name',
+        type: 'input',
+        message: 'Enter last name of employee'
+      },
+      {
+        name: 'manager_id',
+        type: 'input',
+        message: 'Enter employee manager ID'
+      },
+      {
+        name: 'role',
+        type: 'list',
+        choices: function() {
+          var roleSelection = [];
+          for (let i= 0; i < res.length; i++){
+            roleArray.push(res[i].title);
+          }
+          return roleArray;
+        },
+        message: 'enter employee role'
+      }
+    ]).then(function (answer){
+      let role_id;
+      for(let a=0; a < res.length; a++) {
+        if (res[a].title == answer.role){
+          role_id = res [a].id;
+        }
+      }
+      connection.query(
+        'INSERT INTO employee SET ?',
+        {
+          first_name: answer.first_name,
+          last_name: answer.last_name,
+          manager_id: answer.manager_id,
+          role_id: role_id,
+        },
+        function (err) {
+          if(err) throw err;
+          console.log('emplpoyee added to system');
+          options();
+        })
+    })
+  })
+};
 
    
 
