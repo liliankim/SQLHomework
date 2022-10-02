@@ -1,6 +1,7 @@
 const mysql = require("mysql2");
 const inquirer = require("inquirer");
 const consoleTable = require("console.table");
+const { start } = require("repl");
 
 const PORT = process.env.PORT || 3001;
 
@@ -11,6 +12,14 @@ const connection = mysql.createConnection(
     user: "root",
     passsword: "password",
     database: "sqlHomework_db"
+  });
+
+  //connection to mySQL server-database
+  connection,connect(function(err){
+    if(err) throw err;
+    console.log('SQL is now connected!');
+
+    start();
   });
 
   //this is for prompts
